@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Books</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+  </head>
+  <body>
+  <section class="section">
+
+    <div class="container mb-5">
+      <div class="columns">
+        <div class="column">
+          <form method="GET">
+            <label class="label">Search Books</label>
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input" type="text" placeholder="Find a book" name="q">
+                </div>
+                <div class="control">
+                <button class="button is-info">
+                    Search
+                </button>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="column">
+          <form method="POST" action="{% url 'book_add' %}" class="">
+            {% csrf_token %}
+            <label class="label">Add Book</label>
+            <div class="field is-grouped">
+                <div class="control is-expanded">
+                    <input class="input" type="text" placeholder="New Book Title" name="new_title" required>
+                </div>
+                <div class="control">
+                    <button class="button is-success" type="submit">
+                        Add Book
+                    </button>
+                </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="container">
+
+     {% if books %}
+     {% for book in books %}
+      <article class="media">
+        <div class="media-content">
+          <div class="content">
+            <p>
+              <strong>{{ book.title }}</strong>
+              <br />
+                {{ book.description }}
+            </p>
+          </div>
+        </div>
+        <div class="media-right">
+             <form method="POST" action="{% url 'book_delete' %}" onsubmit="return confirm('Are you sure you want to delete this book?');">
+                {% csrf_token %}
+                <input type="hidden" name="book_id" value="{{ book.id }}">
+                <button type="submit" class="delete-btn">&times;</button>
+             </form>
+        </div>
+      </article>
+      {% endfor %}
+      {% endif %}
+
+    </div>
+  </section>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1,
+    "analysis": {
+      "filter": {
+        "ru_stemmer": {
+          "type": "stemmer",
+          "language": "russian"
+        },
+        "ru_synonym": {
+          "type": "synonym",
+          "synonyms_path": "synonyms.txt"
+        }
+      },
+      "analyzer": {
+        "ru_analyzer": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "ru_stemmer",
+            "ru_synonym"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "title": {
+        "type": "text",
+        "analyzer": "ru_analyzer",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "author": {
+        "type": "text",
+        "analyzer": "ru_analyzer"
+      },
+      "description": {
+        "type": "text",
+        "analyzer": "ru_analyzer"
+      },
+      "year": {
+        "type": "date",
+        "format": "yyyy" 
+      }
+    }
+  }
+}
