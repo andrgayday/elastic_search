@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from environs import Env
+
+env = Env()
+env.read_env(override=True)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,12 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h5(pa$z^1n0kwjh5mh2nzgeqlt5+%$4@(8%2sqeq-)$@(9%w!z'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS += env.list("ALLOWED_HOSTS", default=[])
 
 
 # Application definition
@@ -85,9 +91,11 @@ DATABASES = {
 
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'http://localhost:9200'
+        'hosts': env("ELASTICSEARCH_HOST", "http://localhost:9200")
     }
 }
+
+ELASTICSEARCH_INDEX_NAME = env("ELASTICSEARCH_INDEX_NAME", "books")
 
 
 # Password validation

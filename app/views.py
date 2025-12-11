@@ -4,14 +4,25 @@ from .documents import BookDocument
 from django.views.decorators.http import require_POST
 from .models import Book
 
+
 def index(request):
     q = request.GET.get("q")
     context = {}
+    print(q)
     if q:
         query = MultiMatch(query=q, fields=["title"], fuzziness="AUTO")
-        s = BookDocument.search().query(query)[0:25]
-        print(s)
-        context["books"] = s
+        s = BookDocument.search().query(query).sort({'_score': {'order': 'desc'}})[0:25]
+        es_results_map = {hit.meta.id: hit.meta.score for hit in s.execute()}
+        es_ids = list(es_results_map.keys())
+        books_db = Book.objects.filter(id__in=es_ids)
+        books_for_template = []
+        for book_obj in books_db:
+            book_obj.score = es_results_map.get(str(book_obj.id))
+            books_for_template.append(book_obj)
+            books_for_template.sort(key=lambda book: book.score, reverse=True)
+
+        context["books"] = books_for_template
+        context["query"] = q
     return render(request, "index.html", context)
 
 

@@ -146,8 +146,6 @@ media/
 # pycharm
 .idea/
 
-# devops
-Makefile
 
 # dev
 _dev/

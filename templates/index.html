@@ -16,7 +16,7 @@
             <label class="label">Search Books</label>
             <div class="field has-addons">
                 <div class="control is-expanded">
-                  <input class="input" type="text" placeholder="Find a book" name="q">
+                  <input class="input" type="text" placeholder="{% if query %}{{ query }}{% else %}Find a book{% endif %}" name="q">
                 </div>
                 <div class="control">
                 <button class="button is-info">
@@ -54,10 +54,9 @@
         <div class="media-content">
           <div class="content">
             <p>
-              <strong>{{ book.title }}</strong>
-              <br />
-                {{ book.description }}
-            </p>
+              <strong>{{ book.title }}</strong> 
+              <small>Score: {{ book.score|floatformat:4 }}</small> <br />
+              </p>
           </div>
         </div>
         <div class="media-right">
@@ -67,7 +66,7 @@
                 <button type="submit" class="delete-btn">&times;</button>
              </form>
         </div>
-      </article>
+        </article>
       {% endfor %}
       {% endif %}
 
